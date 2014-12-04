@@ -13,8 +13,12 @@ namespace hideForm
 {
     public partial class Form1 : Form
     {
+        private int[] keyID;
+        private KeySetting keyst;
         public Form1()
         {
+            this.keyID = new int[]{1,2};
+            this.keyst = new KeySetting { sfsModifiers = 0, svkey = "F8", hfsModifiers = 0, hvkey = "F6" };
             InitializeComponent();
         }
 
@@ -103,18 +107,11 @@ namespace hideForm
             }, 0);
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            bool ret = W32api.RegisterHotKey(this.Handle, 1, 0, Keys.F6);
-            bool ret1 = W32api.RegisterHotKey(this.Handle, 2, 0, Keys.F8);
-        }
-
         protected override void WndProc(ref Message m)
         {
             switch (m.Msg)
             {
                 case 0x0312:
-                    Console.WriteLine("事件响应成功----[{0}]",m.WParam.ToString());
                     if (m.WParam.ToString().Equals("1"))
                     {
                         foreach (ListViewItem i in this.listView1.Items)
@@ -122,7 +119,7 @@ namespace hideForm
                             if (i.SubItems[1].Text.IndexOf(this.comboBox3.Text) >= 0 && this.comboBox3.Text.Length > 0)
                             {
                                 bool show1 = W32api.ShowWindow(new IntPtr(Convert.ToUInt32(i.Text)), 0);
-                                Console.WriteLine("句柄{0}--隐藏窗口返回{1}", new IntPtr(Convert.ToUInt32(i.Text)), show1);
+                                this.toolStripStatusLabel2.Text = String.Format("句柄{0}--隐藏窗口返回{1}", new IntPtr(Convert.ToUInt32(i.Text)), show1);
                             }
                         }
                     }
@@ -133,13 +130,12 @@ namespace hideForm
                             if (i.SubItems[1].Text.IndexOf(this.comboBox3.Text) >= 0 && this.comboBox3.Text.Length > 0)
                             {
                                 bool show2 = W32api.ShowWindow(new IntPtr(Convert.ToUInt32(i.Text)), 5);
-                                Console.WriteLine("句柄{0}--隐藏窗口返回{1}", new IntPtr(Convert.ToUInt32(i.Text)), show2);
+                                this.toolStripStatusLabel2.Text = String.Format("句柄{0}--隐藏窗口返回{1}", new IntPtr(Convert.ToUInt32(i.Text)), show2);
                             }
                         }
                     }
                     break;
                 default:
-                    Console.WriteLine("收到系统消息---0x{0:x4}",m.WParam.ToInt32());
                     break;
             }
             base.WndProc(ref m);
@@ -153,6 +149,48 @@ namespace hideForm
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             this.comboBox3.Enabled = true;
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            //下面两行是注销已经注册的快捷键
+            bool ret = W32api.UnregisterHotKey(this.Handle, this.keyID[0]); 
+            ret = W32api.UnregisterHotKey(this.Handle, this.keyID[1]);
+            if (this.radioButton2.Checked)
+            {
+                ret = W32api.RegisterHotKey(this.Handle, this.keyID[0], keyst.hfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.hvkey.ToUpper()));   //注册隐藏快捷键
+                ret = W32api.RegisterHotKey(this.Handle, this.keyID[1], keyst.sfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.svkey.ToUpper()));   //注册还原快捷键
+            }
+            else
+            {
+
+            }
+        }
+
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            uint baseVar = 1;
+            this.keyst.hfsModifiers = this.comboBox4.SelectedIndex == 0 ? 0 : baseVar << this.comboBox4.SelectedIndex - 1;
+            this.toolStripStatusLabel2.Text = "选择/输入功能键 [" + this.comboBox4.Text + "]";
+        }
+
+        private void comboBox5_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            uint baseVar = 1;
+            this.keyst.sfsModifiers = this.comboBox5.SelectedIndex == 0 ? 0 : baseVar << this.comboBox5.SelectedIndex - 1;
+            this.toolStripStatusLabel2.Text = "选择/输入功能键 [" + this.comboBox5.Text + "]";
+        }
+
+        private void comboBox1_TextChanged(object sender, EventArgs e)
+        {
+            this.keyst.hvkey = this.comboBox1.Text;
+            this.toolStripStatusLabel2.Text = "选择/输入普通键 [" + this.keyst.hvkey.ToUpper() + "]";
+        }
+
+        private void comboBox2_TextChanged(object sender, EventArgs e)
+        {
+            this.keyst.svkey = this.comboBox2.Text;
+            this.toolStripStatusLabel2.Text = "选择/输入普通键 [" + this.keyst.svkey.ToUpper() + "]";
         }
 
     }

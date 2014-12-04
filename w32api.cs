@@ -25,4 +25,11 @@ namespace hideForm
         [DllImport("user32.dll")]
         public extern static bool UnregisterHotKey(IntPtr hWnd, int id);
     }
+    public struct KeySetting
+    {
+        public uint sfsModifiers;
+        public String svkey;
+        public uint hfsModifiers;
+        public String hvkey;
+    }
 }

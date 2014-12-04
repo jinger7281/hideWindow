@@ -69,17 +69,10 @@ namespace hideForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.comboBox3.SelectedIndex = 0;
+            this.comboBox4.SelectedIndex = 0;
+            this.comboBox5.SelectedIndex = 0;
             this.listView1.Items.Clear();
-            W32api.EnumWindows(delegate(IntPtr hWnd, int LParam)
-            {
-                StringBuilder sb = new StringBuilder();
-                ListViewItem item = new ListViewItem();
-                item.Text = hWnd.ToString();
-                W32api.GetWindowTextW(hWnd, sb, sb.Capacity);
-                item.SubItems.Add(sb.ToString());
-                this.listView1.Items.Add(item);
-                return true;
-            }, 0);
             timer1.Start();
         }
 
@@ -150,6 +143,16 @@ namespace hideForm
                     break;
             }
             base.WndProc(ref m);
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            this.comboBox3.Enabled = false;
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            this.comboBox3.Enabled = true;
         }
 
     }

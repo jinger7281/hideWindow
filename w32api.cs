@@ -32,4 +32,9 @@ namespace hideForm
         public uint hfsModifiers;
         public String hvkey;
     }
+    public struct HwndInfo
+    {
+        public IntPtr HWnd;
+        public String HWndName;
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,10 +16,12 @@ namespace hideForm
     {
         private int[] keyID;
         private KeySetting keyst;
+        private List<HwndInfo> HwndList;
         public Form1()
         {
             this.keyID = new int[]{1,2};
             this.keyst = new KeySetting { sfsModifiers = 0, svkey = "F8", hfsModifiers = 0, hvkey = "F6" };
+            this.HwndList = new List<HwndInfo>();
             InitializeComponent();
         }
 
@@ -82,27 +85,27 @@ namespace hideForm
 
         private void comboBox3_TextChanged(object sender, EventArgs e)
         {
-            foreach (ListViewItem i in this.listView1.Items)
+            this.listView1.Items.Clear();
+            IEnumerable<HwndInfo> infos = from h in this.HwndList where h.HWndName.ToLower().IndexOf(this.comboBox3.Text) >= 0 select h;
+            foreach (var i in infos)
             {
-                i.BackColor = Color.White;
-                if (i.SubItems[1].Text.IndexOf(this.comboBox3.Text) >= 0 && this.comboBox3.Text.Length > 0)
-                {
-                    i.BackColor = Color.Red;
-                }
+                ListViewItem item = new ListViewItem();
+                item.Text = i.HWnd.ToString();
+                item.SubItems.Add(i.HWndName);
+                this.listView1.Items.Add(item);
             }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            this.listView1.Items.Clear();
+            this.HwndList.Clear();
             W32api.EnumWindows(delegate(IntPtr hWnd, int LParam)
             {
                 StringBuilder sb = new StringBuilder();
-                ListViewItem item = new ListViewItem();
-                item.Text = hWnd.ToString();
                 W32api.GetWindowTextW(hWnd, sb, sb.Capacity);
-                item.SubItems.Add(sb.ToString());
-                this.listView1.Items.Add(item);
+                //下面的内容是用ArrayList来存放当前窗口信息的代码
+                HwndInfo info = new HwndInfo { HWnd = hWnd, HWndName = sb.ToString()};
+                this.HwndList.Add(info);
                 return true;
             }, 0);
         }
@@ -114,24 +117,17 @@ namespace hideForm
                 case 0x0312:
                     if (m.WParam.ToString().Equals("1"))
                     {
-                        foreach (ListViewItem i in this.listView1.Items)
-                        {
-                            if (i.SubItems[1].Text.IndexOf(this.comboBox3.Text) >= 0 && this.comboBox3.Text.Length > 0)
-                            {
-                                bool show1 = W32api.ShowWindow(new IntPtr(Convert.ToUInt32(i.Text)), 0);
-                                this.toolStripStatusLabel2.Text = String.Format("句柄{0}--隐藏窗口返回{1}", new IntPtr(Convert.ToUInt32(i.Text)), show1);
-                            }
+                        IEnumerable<HwndInfo> infos = from h in this.HwndList where h.HWndName.ToLower().IndexOf(this.comboBox3.Text)>=0 select h;
+                        foreach(var i in infos){
+                            bool show1 = W32api.ShowWindow(i.HWnd, 0);
                         }
                     }
                     else if (m.WParam.ToString().Equals("2"))
                     {
-                        foreach (ListViewItem i in this.listView1.Items)
+                        IEnumerable<HwndInfo> infos = from h in this.HwndList where h.HWndName.ToLower().IndexOf(this.comboBox3.Text) >= 0 select h;
+                        foreach (var i in infos)
                         {
-                            if (i.SubItems[1].Text.IndexOf(this.comboBox3.Text) >= 0 && this.comboBox3.Text.Length > 0)
-                            {
-                                bool show2 = W32api.ShowWindow(new IntPtr(Convert.ToUInt32(i.Text)), 5);
-                                this.toolStripStatusLabel2.Text = String.Format("句柄{0}--隐藏窗口返回{1}", new IntPtr(Convert.ToUInt32(i.Text)), show2);
-                            }
+                            bool show1 = W32api.ShowWindow(i.HWnd, 5);
                         }
                     }
                     break;

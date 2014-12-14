@@ -9,21 +9,33 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.IO;
 
 namespace hideForm
 {
     public partial class Form1 : Form
     {
+        //声明私有变量
         private int[] keyID;
         private KeySetting keyst;
         private List<HwndInfo> HwndList;
         private List<HwndInfo> CurrentList;
+        private Setting setting;
+
         public Form1()
         {
             this.keyID = new int[]{1,2};
             this.keyst = new KeySetting { sfsModifiers = 0, svkey = "F8", hfsModifiers = 0, hvkey = "F6" };
             this.HwndList = new List<HwndInfo>();
             this.CurrentList = new List<HwndInfo>();
+
+            //如果不存在配置文件创建配置文件
+            this.setting = new Setting();
+            if (!File.Exists(Setting.confPath))
+            {
+                setting.init();
+            }
+
             InitializeComponent();
         }
 
@@ -178,6 +190,12 @@ namespace hideForm
             ret = W32api.UnregisterHotKey(this.Handle, this.keyID[1]);
             ret = W32api.RegisterHotKey(this.Handle, this.keyID[0], keyst.hfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.hvkey.ToUpper()));   //注册隐藏快捷键
             ret = W32api.RegisterHotKey(this.Handle, this.keyID[1], keyst.sfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.svkey.ToUpper()));   //注册还原快捷键
+            //TODO 保存用户的当前设置
+            if (!setting.isElementExist("/config/KeyWords", this.comboBox3.Text))
+            {
+
+            }
+
     }
 
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)

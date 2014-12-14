@@ -54,8 +54,8 @@
             this.comboBox5 = new System.Windows.Forms.ComboBox();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.KeyRadio = new System.Windows.Forms.RadioButton();
+            this.CurrentRadio = new System.Windows.Forms.RadioButton();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -358,8 +358,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.radioButton1);
+            this.groupBox1.Controls.Add(this.KeyRadio);
+            this.groupBox1.Controls.Add(this.CurrentRadio);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
@@ -368,31 +368,31 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "隐藏模式";
             // 
-            // radioButton2
+            // KeyRadio
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Checked = true;
-            this.radioButton2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.radioButton2.Location = new System.Drawing.Point(210, 17);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(83, 17);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "关键字模式";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            this.KeyRadio.AutoSize = true;
+            this.KeyRadio.Checked = true;
+            this.KeyRadio.Dock = System.Windows.Forms.DockStyle.Right;
+            this.KeyRadio.Location = new System.Drawing.Point(210, 17);
+            this.KeyRadio.Name = "KeyRadio";
+            this.KeyRadio.Size = new System.Drawing.Size(83, 17);
+            this.KeyRadio.TabIndex = 1;
+            this.KeyRadio.TabStop = true;
+            this.KeyRadio.Text = "关键字模式";
+            this.KeyRadio.UseVisualStyleBackColor = true;
+            this.KeyRadio.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
-            // radioButton1
+            // CurrentRadio
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.radioButton1.Location = new System.Drawing.Point(3, 17);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(95, 17);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.Text = "当前活动窗口";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            this.CurrentRadio.AutoSize = true;
+            this.CurrentRadio.Dock = System.Windows.Forms.DockStyle.Left;
+            this.CurrentRadio.Location = new System.Drawing.Point(3, 17);
+            this.CurrentRadio.Name = "CurrentRadio";
+            this.CurrentRadio.Size = new System.Drawing.Size(95, 17);
+            this.CurrentRadio.TabIndex = 0;
+            this.CurrentRadio.Text = "当前活动窗口";
+            this.CurrentRadio.UseVisualStyleBackColor = true;
+            this.CurrentRadio.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // listView1
             // 
@@ -498,8 +498,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton KeyRadio;
+        private System.Windows.Forms.RadioButton CurrentRadio;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;

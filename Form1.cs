@@ -17,11 +17,13 @@ namespace hideForm
         private int[] keyID;
         private KeySetting keyst;
         private List<HwndInfo> HwndList;
+        private List<HwndInfo> CurrentList;
         public Form1()
         {
             this.keyID = new int[]{1,2};
             this.keyst = new KeySetting { sfsModifiers = 0, svkey = "F8", hfsModifiers = 0, hvkey = "F6" };
             this.HwndList = new List<HwndInfo>();
+            this.CurrentList = new List<HwndInfo>();
             InitializeComponent();
         }
 
@@ -115,19 +117,41 @@ namespace hideForm
             switch (m.Msg)
             {
                 case 0x0312:
-                    if (m.WParam.ToString().Equals("1"))
+                    if (this.KeyRadio.Checked)
                     {
-                        IEnumerable<HwndInfo> infos = from h in this.HwndList where h.HWndName.ToLower().IndexOf(this.comboBox3.Text)>=0 select h;
-                        foreach(var i in infos){
-                            bool show1 = W32api.ShowWindow(i.HWnd, 0);
+                        if (m.WParam.ToString().Equals("1"))
+                        {
+                            IEnumerable<HwndInfo> infos = from h in this.HwndList where h.HWndName.ToLower().IndexOf(this.comboBox3.Text) >= 0 select h;
+                            foreach (var i in infos)
+                            {
+                                bool show1 = W32api.ShowWindow(i.HWnd, 0);
+                            }
+                        }
+                        else if (m.WParam.ToString().Equals("2"))
+                        {
+                            IEnumerable<HwndInfo> infos = from h in this.HwndList where h.HWndName.ToLower().IndexOf(this.comboBox3.Text) >= 0 select h;
+                            foreach (var i in infos)
+                            {
+                                bool show1 = W32api.ShowWindow(i.HWnd, 5);
+                            }
                         }
                     }
-                    else if (m.WParam.ToString().Equals("2"))
+                    else
                     {
-                        IEnumerable<HwndInfo> infos = from h in this.HwndList where h.HWndName.ToLower().IndexOf(this.comboBox3.Text) >= 0 select h;
-                        foreach (var i in infos)
+                        if (m.WParam.ToString().Equals("1"))
                         {
-                            bool show1 = W32api.ShowWindow(i.HWnd, 5);
+                            HwndInfo info = new HwndInfo();
+                            info.HWnd = W32api.GetForegroundWindow();
+                            StringBuilder sb = new StringBuilder();
+                            W32api.GetWindowTextW(info.HWnd, sb, sb.Capacity);
+                            CurrentList.Add(info);
+                            bool show1 = W32api.ShowWindow(info.HWnd, 0);
+                        }
+                        else if (m.WParam.ToString().Equals("2"))
+                        {
+                            foreach(var i in CurrentList){
+                                bool show1 = W32api.ShowWindow(i.HWnd, 5);
+                            }
                         }
                     }
                     break;
@@ -152,16 +176,9 @@ namespace hideForm
             //下面两行是注销已经注册的快捷键
             bool ret = W32api.UnregisterHotKey(this.Handle, this.keyID[0]); 
             ret = W32api.UnregisterHotKey(this.Handle, this.keyID[1]);
-            if (this.radioButton2.Checked)
-            {
-                ret = W32api.RegisterHotKey(this.Handle, this.keyID[0], keyst.hfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.hvkey.ToUpper()));   //注册隐藏快捷键
-                ret = W32api.RegisterHotKey(this.Handle, this.keyID[1], keyst.sfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.svkey.ToUpper()));   //注册还原快捷键
-            }
-            else
-            {
-
-            }
-        }
+            ret = W32api.RegisterHotKey(this.Handle, this.keyID[0], keyst.hfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.hvkey.ToUpper()));   //注册隐藏快捷键
+            ret = W32api.RegisterHotKey(this.Handle, this.keyID[1], keyst.sfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.svkey.ToUpper()));   //注册还原快捷键
+    }
 
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {

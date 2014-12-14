@@ -24,7 +24,12 @@ namespace hideForm
 
         [DllImport("user32.dll")]
         public extern static bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        [DllImport("user32.dll")]
+        public extern static IntPtr GetForegroundWindow();
     }
+
+    //保存当前设置的快捷键信息
     public struct KeySetting
     {
         public uint sfsModifiers;
@@ -32,6 +37,8 @@ namespace hideForm
         public uint hfsModifiers;
         public String hvkey;
     }
+
+    //保存窗口句柄和窗口名称的结构体
     public struct HwndInfo
     {
         public IntPtr HWnd;

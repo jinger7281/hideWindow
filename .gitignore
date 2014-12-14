@@ -1,4 +1,5 @@
 Thumbs.db
+*.db
 *.obj
 *.exe
 *.pdb

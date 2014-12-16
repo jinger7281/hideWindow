@@ -35,13 +35,39 @@ namespace hideForm
             {
                 setting.init();
             }
-
             InitializeComponent();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+            //下面两行是注销已经注册的快捷键
+            bool ret = W32api.UnregisterHotKey(this.Handle, this.keyID[0]);
+            ret = W32api.UnregisterHotKey(this.Handle, this.keyID[1]);
+            ret = W32api.RegisterHotKey(this.Handle, this.keyID[0], keyst.hfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.hvkey.ToUpper()));   //注册隐藏快捷键
+            ret = W32api.RegisterHotKey(this.Handle, this.keyID[1], keyst.sfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.svkey.ToUpper()));   //注册还原快捷键
+            //保存用户的当前设置
+            //保存用户的关键字信息
+            if (!setting.isElementExist("/config/KeyWords", this.comboBox3.Text) && this.KeyRadio.Checked)
+            {
+                setting.addElement("/config/KeyWords", "KeyWord", this.comboBox3.Text);
+                this.comboBox3.Items.Clear();
+                foreach (String i in setting.readXML("/config/KeyWords"))
+                {
+                    this.comboBox3.Items.Add(i);
+                }
+            }
+            //保存用户的按键信息
+            setting.updateXML("/config/HideKey", keyst.hvkey.ToUpper(), keyst.hfsModifiers.ToString(),"fk");
+            setting.updateXML("/config/ShowKey", keyst.svkey.ToUpper(), keyst.sfsModifiers.ToString(), "fk");
+            //保存用户的隐藏模式
+            if (KeyRadio.Checked)
+            {
+                setting.updateXML("/config/Mode", "KeyWord");
+            }
+            else
+            {
+                setting.updateXML("/config/Mode", "Current");
+            }
         }
 
         private void 退出EToolStripMenuItem_Click(object sender, EventArgs e)
@@ -90,6 +116,10 @@ namespace hideForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            foreach (String i in setting.readXML("/config/KeyWords"))
+            {
+                this.comboBox3.Items.Add(i);
+            }
             this.comboBox3.SelectedIndex = 0;
             this.comboBox4.SelectedIndex = 0;
             this.comboBox5.SelectedIndex = 0;
@@ -182,21 +212,6 @@ namespace hideForm
         {
             this.comboBox3.Enabled = true;
         }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            //下面两行是注销已经注册的快捷键
-            bool ret = W32api.UnregisterHotKey(this.Handle, this.keyID[0]); 
-            ret = W32api.UnregisterHotKey(this.Handle, this.keyID[1]);
-            ret = W32api.RegisterHotKey(this.Handle, this.keyID[0], keyst.hfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.hvkey.ToUpper()));   //注册隐藏快捷键
-            ret = W32api.RegisterHotKey(this.Handle, this.keyID[1], keyst.sfsModifiers, (Keys)Enum.Parse(typeof(Keys), this.keyst.svkey.ToUpper()));   //注册还原快捷键
-            //TODO 保存用户的当前设置
-            if (!setting.isElementExist("/config/KeyWords", this.comboBox3.Text))
-            {
-
-            }
-
-    }
 
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -305,7 +305,7 @@
             this.button1.TabIndex = 4;
             this.button1.Text = "运行";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // comboBox4
             // 
@@ -346,10 +346,6 @@
             this.tableLayoutPanel1.SetColumnSpan(this.comboBox3, 2);
             this.comboBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Items.AddRange(new object[] {
-            "魔兽世界",
-            "梦幻西游",
-            "完美"});
             this.comboBox3.Location = new System.Drawing.Point(99, 81);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(188, 20);
